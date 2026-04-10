@@ -1,6 +1,7 @@
 package com.example.datapipeline.dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,8 +15,11 @@ import lombok.Setter;
 public class DataRequestDto {
 
     @NotNull
+    @NotBlank(message = "Name is required")
     private String name;
 
-    @Email
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required")
     private String email;
+
 }

@@ -9,15 +9,14 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class DataResponseDto {
     private Long id;
     private String name;
     private String email;
     private String status;
-    private LocalDateTime createdAt;
 
-    public DataResponseDto(String name, String email, String status) {
+    public DataResponseDto(Long id,String name, String email, String status) {
+        this.id=id;
         this.name = name;
         this.email = email;
         this.status = status;

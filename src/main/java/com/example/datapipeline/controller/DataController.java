@@ -28,7 +28,7 @@ public class DataController {
         return ResponseEntity.accepted().body("Queued");
     }
 
-    @GetMapping("/data/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<DataResponseDto> get(@PathVariable Long id) {
         return ResponseEntity.ok(service.getData(id));
     }

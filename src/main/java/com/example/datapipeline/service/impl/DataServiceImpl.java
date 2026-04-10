@@ -3,14 +3,16 @@ package com.example.datapipeline.service.impl;
 import com.example.datapipeline.dto.DataRequestDto;
 import com.example.datapipeline.dto.DataResponseDto;
 import com.example.datapipeline.entity.DataEntity;
+import com.example.datapipeline.exception.ResourceNotFoundException;
 import com.example.datapipeline.repository.DataRepository;
 import com.example.datapipeline.service.DataService;
 import com.example.datapipeline.service.QueueService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Slf4j
 @Service
 public class DataServiceImpl implements DataService {
 
@@ -29,7 +31,9 @@ public class DataServiceImpl implements DataService {
         entity.setEmail(dto.getEmail());
         entity.setStatus("PENDING");
 
+
         repository.save(entity);
+        log.info("Saved entity id={}, pushing to queue", entity.getId());
 
         queueService.push(entity);
     }
@@ -37,10 +41,12 @@ public class DataServiceImpl implements DataService {
     @Override
     @Cacheable(value = "dataCache", key = "#id")
     public DataResponseDto getData(Long id) {
-        DataEntity entity = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Not found"));
+        log.debug("Cache miss — fetching id={} from DB", id);
 
-        return new DataResponseDto(entity.getName(), entity.getEmail(), entity.getStatus());
+        DataEntity entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("DataRecord", "id", id));
+
+        return new DataResponseDto(entity.getId(),entity.getName(), entity.getEmail(), entity.getStatus());
     }
 
     @Override
