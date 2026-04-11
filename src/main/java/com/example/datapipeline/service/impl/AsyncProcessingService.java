@@ -28,6 +28,7 @@ public class AsyncProcessingService {
                 entity.getId(), Thread.currentThread().getName());
         try {
             dataService.updateStatus(entity, "PROCESSING");
+            log.info("async id={} → PROCESSING", entity.getId());
             callExternalApi(entity);
             dataService.updateStatus(entity, "SUCCESS");
             log.info("async id={} → SUCCESS", entity.getId());

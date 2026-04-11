@@ -8,6 +8,7 @@ import com.example.datapipeline.repository.DataRepository;
 import com.example.datapipeline.service.DataService;
 import com.example.datapipeline.service.QueueService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +56,7 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
+    @CacheEvict(value = "dataCache", key = "#entity.id")
     public void updateStatus(DataEntity entity, String status) {
         entity.setStatus(status);
         repository.save(entity);
