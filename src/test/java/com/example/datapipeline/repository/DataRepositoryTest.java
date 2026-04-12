@@ -16,19 +16,24 @@ class DataRepositoryTest {
     @Autowired
     DataRepository dataRepository;
     @Test
-    public void findByStatus_returnPendingRecords(){
+    public void givenPendingRecord_whenFindByStatusPending_thenReturnRecord(){
+        //given precondition or setup
         DataEntity dataEntity=new DataEntity();
         dataEntity.setName("test");
         dataEntity.setEmail("test@gmail.com");
         dataEntity.setStatus(DataStatus.PENDING);
+
+         //when -action or behaviour going to test
         dataRepository.saveAndFlush(dataEntity);  //save + immediately write to DB
         List<DataEntity> result=dataRepository.findByStatus(DataStatus.PENDING);
+
+        //then-verify  the output
         assertThat(result).isNotEmpty();
         assertThat(result.get(0).getStatus()).isEqualTo(DataStatus.PENDING);
     }
 
     @Test
-    void findByStatus_returnsSuccessRecords() {
+    void givenNoSuccessRecord_whenFindByStatusSuccess_thenReturnEmpty() {
         List<DataEntity> result = dataRepository.findByStatus(DataStatus.SUCCESS);
         assertThat(result).isEmpty();
     }
