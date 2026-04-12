@@ -1,5 +1,6 @@
 package com.example.datapipeline.service.impl;
 
+import com.example.datapipeline.constants.DataStatus;
 import com.example.datapipeline.dto.DataRequestDto;
 import com.example.datapipeline.dto.DataResponseDto;
 import com.example.datapipeline.entity.DataEntity;
@@ -8,6 +9,7 @@ import com.example.datapipeline.repository.DataRepository;
 import com.example.datapipeline.service.DataService;
 import com.example.datapipeline.service.QueueService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +31,11 @@ public class DataServiceImpl implements DataService {
         DataEntity entity = new DataEntity();
         entity.setName(dto.getName());
         entity.setEmail(dto.getEmail());
-        entity.setStatus("PENDING");
+        entity.setStatus(DataStatus.PENDING);
 
 
-        repository.save(entity);
-        log.info("Saved entity id={}, pushing to queue", entity.getId());
+        DataEntity saved = repository.save(entity);  // ← capture return value
+        log.info("Saved entity id={}, pushing to queue", saved.getId());
 
         queueService.push(entity);
     }
@@ -51,11 +53,12 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public List<DataEntity> getPending() {
-        return repository.findByStatus("PENDING");
+        return repository.findByStatus(DataStatus.PENDING);
     }
 
     @Override
-    public void updateStatus(DataEntity entity, String status) {
+    @CacheEvict(value = "dataCache", key = "#entity.id")
+    public void updateStatus(DataEntity entity, DataStatus status) {
         entity.setStatus(status);
         repository.save(entity);
     }

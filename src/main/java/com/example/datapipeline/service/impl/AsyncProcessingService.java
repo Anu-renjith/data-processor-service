@@ -1,5 +1,6 @@
 package com.example.datapipeline.service.impl;
 
+import com.example.datapipeline.constants.DataStatus;
 import com.example.datapipeline.entity.DataEntity;
 import com.example.datapipeline.service.DataService;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +28,14 @@ public class AsyncProcessingService {
         log.info("async Processing id={} on thread={}",
                 entity.getId(), Thread.currentThread().getName());
         try {
-            dataService.updateStatus(entity, "PROCESSING");
+            dataService.updateStatus(entity, DataStatus.PROCESSING);
+            log.info("async id={} → PROCESSING", entity.getId());
             callExternalApi(entity);
-            dataService.updateStatus(entity, "SUCCESS");
+            dataService.updateStatus(entity, DataStatus.SUCCESS);
             log.info("async id={} → SUCCESS", entity.getId());
         } catch (Exception e) {
             log.error("async id={} → FAILED: {}", entity.getId(), e.getMessage());
-            dataService.updateStatus(entity, "FAILED");
+            dataService.updateStatus(entity, DataStatus.FAILED);
         }
     }
 
