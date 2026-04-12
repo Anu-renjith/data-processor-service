@@ -1,5 +1,6 @@
 package com.example.datapipeline.service.impl;
 
+import com.example.datapipeline.constants.DataStatus;
 import com.example.datapipeline.dto.DataRequestDto;
 import com.example.datapipeline.dto.DataResponseDto;
 import com.example.datapipeline.entity.DataEntity;
@@ -30,7 +31,7 @@ public class DataServiceImpl implements DataService {
         DataEntity entity = new DataEntity();
         entity.setName(dto.getName());
         entity.setEmail(dto.getEmail());
-        entity.setStatus("PENDING");
+        entity.setStatus(DataStatus.PENDING);
 
 
         repository.save(entity);
@@ -52,12 +53,12 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public List<DataEntity> getPending() {
-        return repository.findByStatus("PENDING");
+        return repository.findByStatus(DataStatus.PENDING);
     }
 
     @Override
     @CacheEvict(value = "dataCache", key = "#entity.id")
-    public void updateStatus(DataEntity entity, String status) {
+    public void updateStatus(DataEntity entity, DataStatus status) {
         entity.setStatus(status);
         repository.save(entity);
     }

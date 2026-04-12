@@ -17,7 +17,7 @@ public class QueueServiceImpl implements QueueService {
     public void push(DataEntity entity) {
         log.debug("Queue PUSH id={}, instance={}", entity.getId(), this);
 
-        queue.offer(entity);
+        queue.offer(entity);  //adds the item and returns true
     }
 
     public DataEntity poll() {

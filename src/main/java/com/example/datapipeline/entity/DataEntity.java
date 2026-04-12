@@ -1,5 +1,6 @@
 package com.example.datapipeline.entity;
 
+import com.example.datapipeline.constants.DataStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +22,9 @@ public class DataEntity {
 
     private String name;
     private String email;
-    private String status; // PENDING, SUCCESS, FAILED
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DataStatus status; // PENDING, SUCCESS, FAILED
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
