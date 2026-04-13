@@ -37,7 +37,7 @@ public class DataServiceImpl implements DataService {
         DataEntity saved = repository.save(entity);  // ← capture return value
         log.info("Saved entity id={}, pushing to queue", saved.getId());
 
-        queueService.push(entity);
+        queueService.push(saved);
     }
 
     @Override

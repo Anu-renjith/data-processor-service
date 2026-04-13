@@ -6,9 +6,9 @@ import com.example.datapipeline.dto.DataResponseDto;
 import com.example.datapipeline.entity.DataEntity;
 import com.example.datapipeline.exception.ResourceNotFoundException;
 import com.example.datapipeline.repository.DataRepository;
+import com.example.datapipeline.service.QueueService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,7 +26,8 @@ class DataServiceImplTest {
 
     @Mock
     DataRepository repository;
-    @Mock QueueServiceImpl queueService;
+    @Mock
+    QueueService queueService;
     @InjectMocks
     DataServiceImpl dataService;
 
@@ -37,6 +38,7 @@ class DataServiceImplTest {
 
     @Test
     void givenValidRequest_whenSubmit_thenPushesToQueueImmediately() {
+        //given
         DataRequestDto dto = new DataRequestDto();
         dto.setName("test");
         dto.setEmail("test@gmail.com");
@@ -57,8 +59,8 @@ class DataServiceImplTest {
                 entity.getStatus() == DataStatus.PENDING &&
                         entity.getName().equals("test") &&
                         entity.getEmail().equals("test@gmail.com")
-        ));                                          // saved with correct data ✅
-        verify(queueService, times(1)).push(any(DataEntity.class));  // pushed saved entity with ID ✅
+        ));                                          // saved with correct data
+        verify(queueService, times(1)).push(any(DataEntity.class));  // pushed saved entity with ID
     }
 
 /*    @Test
@@ -75,13 +77,13 @@ class DataServiceImplTest {
         // When
         dataService.submit(dto);
 
-        // Then — save happens BEFORE queue push (order matters!) ✅
+        // Then — save happens BEFORE queue push (order matters!)
         InOrder inOrder = inOrder(repository, queueService);
         inOrder.verify(repository).save(any());
         inOrder.verify(queueService).push(any());
     }*/
 
-    // ── SCHEDULER FALLBACK FLOW ───────────────────────────────────
+    // SCHEDULER FALLBACK FLOW
     // "If queue is empty after restart — falls back to
     //  querying DB for PENDING records"
 
@@ -112,11 +114,11 @@ class DataServiceImplTest {
         // When
         List<DataEntity> result = dataService.getPending();
 
-        // Then — scheduler sees empty list, does nothing ✅
+        // Then — scheduler sees empty list, does nothing
         assertThat(result).isEmpty();
     }*/
 
-    // ── ASYNC PROCESSING FLOW ─────────────────────────────────────
+    // ASYNC PROCESSING FLOW
     // "async method marks PROCESSING, calls external API,
     //  then marks SUCCESS or FAILED"
 
@@ -165,7 +167,7 @@ class DataServiceImplTest {
         verify(repository, times(1)).save(entity);
     }
 
-    // ── CACHE READ FLOW ───────────────────────────────────────────
+    //   CACHE READ FLOW
     // "First call → cache miss → queries MySQL
     //  Second call within TTL → served from memory"
 
