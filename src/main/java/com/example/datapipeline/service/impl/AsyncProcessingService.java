@@ -20,7 +20,7 @@ public class AsyncProcessingService {
 
     private final DataService dataService;
 
-    @Value("${app.external.url:https://jsonplaceholder.typicode.com/posts}")
+    @Value("${app.external.api.url}")
     private String externalUrl;
 
     @Async  // runs on async thread pool — NOT the scheduler thread
@@ -46,7 +46,7 @@ public class AsyncProcessingService {
         payload.put("name", entity.getName());
         payload.put("email", entity.getEmail());
 
-        log.info("async POSTing id={} to {}", entity.getId(), externalUrl);
+        log.info("async POSTing id={}", entity.getId());
         String response = restTemplate.postForObject(externalUrl, payload, String.class);
         log.info("async Response for id={}: {}", entity.getId(), response);
     }
