@@ -5,7 +5,6 @@ import com.example.datapipeline.dto.DataRequestDto;
 import com.example.datapipeline.dto.DataResponseDto;
 import com.example.datapipeline.service.DataService;
 import jakarta.validation.Valid;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

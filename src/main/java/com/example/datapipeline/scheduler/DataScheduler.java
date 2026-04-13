@@ -8,11 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -23,7 +19,7 @@ public class DataScheduler {
     private final QueueService queueService;
     private final AsyncProcessingService asyncProcessingService;
 
-    @Scheduled(fixedDelay = 15000)
+    @Scheduled(fixedDelay = 15000) //scheduler runs independently every 15 seconds
     public void processQueue() {
         log.info("[scheduler] Triggered");
 
