@@ -53,6 +53,7 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public List<DataEntity> getPending() {
+
         return repository.findByStatus(DataStatus.PENDING);
     }
 
