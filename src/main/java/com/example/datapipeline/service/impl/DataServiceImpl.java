@@ -43,7 +43,7 @@ public class DataServiceImpl implements DataService {
     @Override
     @Cacheable(value = "dataCache", key = "#id")
     public DataResponseDto getData(Long id) {
-        log.debug("Cache miss — fetching id={} from DB", id);
+        log.info("Cache miss — fetching id={} from DB", id);
 
         DataEntity entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("DataRecord", "id", id));
